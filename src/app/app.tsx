@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { User } from "./components/user";
-import { UserWithKeyframes } from "./components/user/user-with-keyframes";
-import { UserWithTransition } from "./components/user/user-with-transition";
+import {
+  Example,
+  ExampleWithKeyframes,
+  ExampleWithTransition,
+} from "../components/example";
 
 export const App = () => {
-  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [active, setActive] = useState<boolean>(false);
 
   return (
     <div
@@ -16,17 +18,17 @@ export const App = () => {
     >
       <button
         style={{ marginBottom: "30px" }}
-        onClick={() => setIsVisible(!isVisible)}
+        onClick={() => setActive(!active)}
       >
-        {isVisible ? "Скрыть" : "Показать"}
+        {active ? "Скрыть" : "Показать"}
       </button>
-      <User title="Компонент по умолчанию" />
-      <UserWithKeyframes
-        active={isVisible}
+      <Example title="Компонент по умолчанию" />
+      <ExampleWithKeyframes
+        active={active}
         title="Сделано через keyframes (предпочтительно для монтирования элемента на экране)"
       />
-      <UserWithTransition
-        active={isVisible}
+      <ExampleWithTransition
+        active={active}
         title="Сделано через transition (предпочтительно только для переходов уже существующих элементов на экране)"
       />
     </div>

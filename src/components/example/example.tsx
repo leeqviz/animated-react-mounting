@@ -1,14 +1,14 @@
-const user = {
+const example = {
   firstName: "Иван",
   lastName: "Иванов",
 } as const;
 
-interface UserProps {
+interface ExampleProps {
   title?: string;
   className?: string;
 }
 
-export function User({ title, ...rest }: Readonly<UserProps>) {
+export function Example({ title, ...rest }: Readonly<ExampleProps>) {
   return (
     <div {...rest}>
       {title && <h1>{title}</h1>}
@@ -22,10 +22,10 @@ export function User({ title, ...rest }: Readonly<UserProps>) {
         }}
       >
         <p>
-          <strong>Имя:</strong> {user.firstName}
+          <strong>Имя:</strong> {example.firstName}
         </p>
         <p>
-          <strong>Фамилия:</strong> {user.lastName}
+          <strong>Фамилия:</strong> {example.lastName}
         </p>
       </div>
     </div>

@@ -15,7 +15,7 @@ export function withTransition<P extends { className?: string }>(
   baseCSSClass: string,
   transitionCSSClass: string,
 ) {
-  return function TransitionComponent(props: P & WithTransitionProps) {
+  return function AnimatedComponent(props: P & WithTransitionProps) {
     const { active } = props;
     const { mounted, visible, unmount } = useTransition(active);
 

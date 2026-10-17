@@ -1,10 +1,7 @@
 import { useState } from "react";
-import { AnimatedDiv } from "./animated-div";
-
-const user = {
-  firstName: "Иван",
-  lastName: "Иванов",
-} as const;
+import { User } from "./components/user";
+import { UserWithKeyframes } from "./components/user/user-with-keyframes";
+import { UserWithTransition } from "./components/user/user-with-transition";
 
 export const App = () => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -21,26 +18,17 @@ export const App = () => {
         style={{ marginBottom: "30px" }}
         onClick={() => setIsVisible(!isVisible)}
       >
-        {isVisible ? "Закрыть профиль" : "Открыть профиль"}
+        {isVisible ? "Скрыть" : "Показать"}
       </button>
-      <AnimatedDiv isVisible={isVisible}>
-        <h2>Мой Профиль</h2>
-        <div
-          style={{
-            background: "#f9f9f9",
-            padding: "16px",
-            borderRadius: "6px",
-            marginBottom: "16px",
-          }}
-        >
-          <p>
-            <strong>Имя:</strong> {user.firstName}
-          </p>
-          <p>
-            <strong>Фамилия:</strong> {user.lastName}
-          </p>
-        </div>
-      </AnimatedDiv>
+      <User title="Компонент по умолчанию" />
+      <UserWithKeyframes
+        active={isVisible}
+        title="Сделано через keyframes (предпочтительно для монтирования элемента на экране)"
+      />
+      <UserWithTransition
+        active={isVisible}
+        title="Сделано через transition (предпочтительно только для переходов уже существующих элементов на экране)"
+      />
     </div>
   );
 };

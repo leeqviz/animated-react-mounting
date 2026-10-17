@@ -1,14 +1,14 @@
-# React Animation Mount/Unmount Components & Hooks
+# React Animation Mount/Unmount HOC Components & Hooks
 
-Легковесное и производительное решение для монтирования и размонтирования React-компонентов с плавными анимациями **без использования таймеров (`setTimeout`)** в коде JavaScript.
+Легковесное и производительное решение для монтирования и размонтирования React-компонентов с плавными анимациями **без использования таймеров (`setTimeout`)** в коде JavaScript и гибкого встраивания в уже готовые бизнес-компоненты. Всё что нужно сделать, это прописать свои стили анимации CSS и завернуть компонент в HOC, или использовать hook с логикой напрямую.
 
-Вся логика завязана на нативных браузерных событиях `animationend` и `transitionend`. CSS является единственным источником правды для таймингов и описания анимации. А JS синхронизирует CSS с React.
+Вся логика завязана на нативных браузерных событиях `animationend` и `transitionend`. CSS является единственным источником правды для таймингов и описания анимации. А JS синхронизирует анимацию CSS с жизненным циклом компонентов React. После монтирования, проигрывается анимация монтирования, а перед размонтированием, React ждет окончания анимации.
 
 ## ✨ Преимущества подхода
 
-- **60 FPS:** Анимации полностью обрабатываются графическим процессором (GPU) через CSS.
-- **Синхронизация:** При изменении длительности анимации в CSS (`.module.css`), JS-код автоматически подстраивается под новые тайминги.
-- **Чистая архитектура:** Логика полностью скрыта в кастомных хуках и Компонентах Высшего Порядка (HOC). Бизнес-компоненты остаются чистыми, что позволяет произвести достаточно гибкую интеграцию. Лучше всего использовать анимацию на keyframes, а не с помощью transition, так как она именно для этого и предназначена
+- **60 FPS:** Анимации полностью обрабатываются графическим процессором (GPU) через CSS. React рендерит всё только один раз при монтировании и при размонтировании.
+- **Синхронизация:** При изменении длительности анимации в CSS (`.module.css`), JS-код автоматически подстраивается под новые тайминги, потому что просто дожидается окончания анимации.
+- **Чистая архитектура:** Логика полностью скрыта в кастомных хуках и Компонентах Высшего Порядка (HOC). Бизнес-компоненты остаются чистыми, что позволяет добиться достаточно гибкой интеграции. Лучше всего использовать анимацию на keyframes, а не с помощью transition, так как keyframes именно для этого и предназначены, а transition предназначен для элементов, которые уже есть в DOM.
 - **Типобезопасность:** Полная поддержка TypeScript.
 
 ## 🛠️ Реализация
@@ -17,7 +17,7 @@
 
 #### `use-keyframes.ts`
 
-Хук синхронно перехватывает изменение пропса `active` во время рендера без useEffect и управляет жизненным циклом монтирования. Возвращает флаг монтирования и функцию размонтирования, которую нужно передать в обработчик onAnimationEnd
+Хук синхронно перехватывает изменение пропса `active` во время рендера (без сторонних эффектов в useEffect) и управляет жизненным циклом монтирования. Возвращает флаг монтирования для условного рендеринга компонента и функцию размонтирования, которую нужно передать в обработчик onAnimationEnd
 
 ```typescript
 import { useCallback, useState, type AnimationEvent } from "react";
@@ -45,7 +45,7 @@ export const useKeyframes = (active: boolean) => {
 
 #### `with-keyframes.tsx`
 
-Компонент высшего порядка, который обогащает любой компонент логикой анимированного монтирования и размонтирования с помощью хука и возвращает новый компонент с обработчиком окончания анимации и встраивает кастомные классы анимации, которые ему были переданы
+Компонент высшего порядка, который обогащает любой компонент логикой анимированного монтирования и размонтирования с помощью хука и возвращает новый компонент с обработчиком окончания анимации, и встраивает кастомные классы анимации, которые ему были переданы
 
 ```tsx
 import {
@@ -86,16 +86,16 @@ export function withKeyframes<P extends { className?: string }>(
 
 ---
 
-### 2. Подход через CSS Transitions (не рекомендуется)
+### 2. Подход через CSS Transitions (крайне не рекомендуется)
 
-#### `use-transition.ts`
+#### `use-transitions.ts`
 
-Использует `requestAnimationFrame`, чтобы дать браузеру отрендерить базовое состояние элемента перед запуском плавного перехода (`transition`). Своего рода костыль, который в теории, может создать рассинхронизацию анимирования CSS и JS
+Использует `requestAnimationFrame`, чтобы дать браузеру отрендерить базовое состояние элемента перед запуском плавного перехода (`transition`). Своего рода костыль, который, в теории, может создать рассинхронизацию анимирования CSS и JS
 
 ```typescript
 import { useCallback, useEffect, useState, type TransitionEvent } from "react";
 
-export const useTransition = (active: boolean) => {
+export const useTransitions = (active: boolean) => {
   const [mounted, setMounted] = useState(active);
   const [visible, setVisible] = useState(active);
   const [prevActive, setPrevActive] = useState(active);
@@ -127,7 +127,7 @@ export const useTransition = (active: boolean) => {
 };
 ```
 
-#### `with-transition.tsx`
+#### `with-transitions.tsx`
 
 ```tsx
 import {
@@ -136,20 +136,20 @@ import {
   type ComponentType,
   type HTMLAttributes,
 } from "react";
-import { useTransition } from "../../hooks/animated-mounting";
+import { useTransitions } from "../../hooks/animated-mounting";
 
-interface WithTransitionProps {
+interface WithTransitionsProps {
   active: boolean;
 }
 
-export function withTransition<P extends { className?: string }>(
+export function withTransitions<P extends { className?: string }>(
   Component: ComponentType<P>,
   baseCSSClass: string,
   transitionCSSClass: string,
 ) {
-  return function AnimatedComponent(props: P & WithTransitionProps) {
+  return function AnimatedComponent(props: P & WithTransitionsProps) {
     const { active } = props;
-    const { mounted, visible, unmount } = useTransition(active);
+    const { mounted, visible, unmount } = useTransitions(active);
 
     if (!mounted) return null;
 
@@ -172,7 +172,7 @@ export function withTransition<P extends { className?: string }>(
 
 ### ⚠️ Важное требование к компонентам
 
-Целевой компонент **обязан принимать пропсы** (`className`, `onAnimationEnd`/`onTransitionEnd`) и прокидывать их на свой корневой HTML-тег с помощью деструктуризации (`...rest`).
+Целевой компонент, который мы хотим обогатить логикой анимированного монтирования и размонтирования через HOC, **обязан принимать пропсы** (`className`, `onAnimationEnd`/`onTransitionEnd`) и прокидывать их на свой корневой HTML-тег, в который HOC компонент встроит классы анимации, которые мы ему передадим, и будет слушать его `onAnimationEnd`/`onTransitionEnd`. При использовании хука напрямую, придется прокидывать всё вручную.
 
 #### `example.tsx`
 
@@ -228,14 +228,14 @@ export const ExampleWithKeyframes = withKeyframes(
 );
 ```
 
-#### `example-with-transition.ts`
+#### `example-with-transitions.ts`
 
 ```typescript
-import { withTransition } from "../../animated-mounting";
+import { withTransitions } from "../../animated-mounting";
 import { Example } from "../example";
-import classes from "./example-with-transition.module.css";
+import classes from "./example-with-transitions.module.css";
 
-export const ExampleWithTransition = withTransition(
+export const ExampleWithTransitions = withTransitions(
   Example,
   classes.invisible,
   classes.visible,
@@ -249,7 +249,7 @@ import { useState } from "react";
 import {
   Example,
   ExampleWithKeyframes,
-  ExampleWithTransition,
+  ExampleWithTransitions,
 } from "../components/example";
 
 export const App = () => {
@@ -274,9 +274,9 @@ export const App = () => {
         active={active}
         title="Сделано через keyframes (предпочтительно для монтирования элемента на экране)"
       />
-      <ExampleWithTransition
+      <ExampleWithTransitions
         active={active}
-        title="Сделано через transition (предпочтительно только для переходов уже существующих элементов на экране)"
+        title="Сделано через transitions (предпочтительно только для переходов уже существующих элементов на экране)"
       />
     </div>
   );

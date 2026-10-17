@@ -2,7 +2,7 @@ import { useState } from "react";
 import {
   Example,
   ExampleWithKeyframes,
-  ExampleWithTransition,
+  ExampleWithTransitions,
 } from "../components/example";
 
 export const App = () => {
@@ -27,9 +27,9 @@ export const App = () => {
         active={active}
         title="Сделано через keyframes (предпочтительно для монтирования элемента на экране)"
       />
-      <ExampleWithTransition
+      <ExampleWithTransitions
         active={active}
-        title="Сделано через transition (предпочтительно только для переходов уже существующих элементов на экране)"
+        title="Сделано через transitions (предпочтительно только для переходов уже существующих элементов на экране)"
       />
     </div>
   );

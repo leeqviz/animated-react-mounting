@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState, type TransitionEvent } from "react";
 
-export const useTransition = (active: boolean) => {
+export const useTransitions = (active: boolean) => {
   const [mounted, setMounted] = useState(active);
   const [visible, setVisible] = useState(active);
   const [prevActive, setPrevActive] = useState(active);

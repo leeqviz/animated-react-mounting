@@ -4,20 +4,20 @@ import {
   type ComponentType,
   type HTMLAttributes,
 } from "react";
-import { useTransition } from "../../hooks/animated-mounting";
+import { useTransitions } from "../../hooks/animated-mounting";
 
-interface WithTransitionProps {
+interface WithTransitionsProps {
   active: boolean;
 }
 
-export function withTransition<P extends { className?: string }>(
+export function withTransitions<P extends { className?: string }>(
   Component: ComponentType<P>,
   baseCSSClass: string,
   transitionCSSClass: string,
 ) {
-  return function AnimatedComponent(props: P & WithTransitionProps) {
+  return function AnimatedComponent(props: P & WithTransitionsProps) {
     const { active } = props;
-    const { mounted, visible, unmount } = useTransition(active);
+    const { mounted, visible, unmount } = useTransitions(active);
 
     if (!mounted) return null;
 

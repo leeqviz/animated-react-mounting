@@ -1,2 +1,2 @@
 export * from "./use-keyframes";
-export * from "./use-transition";
+export * from "./use-transitions";

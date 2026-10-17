@@ -4,7 +4,7 @@ import {
   type ComponentType,
   type HTMLAttributes,
 } from "react";
-import { useTransitions } from "../../hooks/animated-mounting";
+import { useTransitions } from "../../hooks/animated";
 
 interface WithTransitionsProps {
   active: boolean;

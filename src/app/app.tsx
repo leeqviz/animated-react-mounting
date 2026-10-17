@@ -1,8 +1,8 @@
 import { useState } from "react";
 import {
+  AnimatedExampleWithKeyframes,
+  AnimatedExampleWithTransitions,
   Example,
-  ExampleWithKeyframes,
-  ExampleWithTransitions,
 } from "../components/example";
 
 export const App = () => {
@@ -23,11 +23,11 @@ export const App = () => {
         {active ? "Скрыть" : "Показать"}
       </button>
       <Example title="Компонент по умолчанию" />
-      <ExampleWithKeyframes
+      <AnimatedExampleWithKeyframes
         active={active}
         title="Сделано через keyframes (предпочтительно для монтирования элемента на экране)"
       />
-      <ExampleWithTransitions
+      <AnimatedExampleWithTransitions
         active={active}
         title="Сделано через transitions (предпочтительно только для переходов уже существующих элементов на экране)"
       />

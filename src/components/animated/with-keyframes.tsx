@@ -4,7 +4,7 @@ import {
   type ComponentType,
   type HTMLAttributes,
 } from "react";
-import { useKeyframes } from "../../hooks/animated-mounting";
+import { useKeyframes } from "../../hooks/animated";
 
 interface WithKeyframesProps {
   active: boolean;

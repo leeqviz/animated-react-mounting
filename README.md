@@ -54,7 +54,7 @@ import {
   type ComponentType,
   type HTMLAttributes,
 } from "react";
-import { useKeyframes } from "../../hooks/animated-mounting";
+import { useKeyframes } from "../../hooks/animated";
 
 interface WithKeyframesProps {
   active: boolean;
@@ -136,7 +136,7 @@ import {
   type ComponentType,
   type HTMLAttributes,
 } from "react";
-import { useTransitions } from "../../hooks/animated-mounting";
+import { useTransitions } from "../../hooks/animated";
 
 interface WithTransitionsProps {
   active: boolean;
@@ -214,28 +214,28 @@ export function Example({ title, ...rest }: Readonly<ExampleProps>) {
 
 ### Создание и рендер анимированных компонентов
 
-#### `example-with-keyframes.ts`
+#### `with-keyframes.ts`
 
 ```typescript
-import { withKeyframes } from "../../animated-mounting";
-import { Example } from "../example";
-import classes from "./example-with-keyframes.module.css";
+import { withKeyframes } from "../../../animated";
+import { Example } from "../../example";
+import classes from "./with-keyframes.module.css";
 
-export const ExampleWithKeyframes = withKeyframes(
+export const AnimatedExampleWithKeyframes = withKeyframes(
   Example,
   classes.appear,
   classes.disappear,
 );
 ```
 
-#### `example-with-transitions.ts`
+#### `with-transitions.ts`
 
 ```typescript
-import { withTransitions } from "../../animated-mounting";
-import { Example } from "../example";
-import classes from "./example-with-transitions.module.css";
+import { withTransitions } from "../../../animated";
+import { Example } from "../../example";
+import classes from "./with-transitions.module.css";
 
-export const ExampleWithTransitions = withTransitions(
+export const AnimatedExampleWithTransitions = withTransitions(
   Example,
   classes.invisible,
   classes.visible,
@@ -247,9 +247,9 @@ export const ExampleWithTransitions = withTransitions(
 ```tsx
 import { useState } from "react";
 import {
+  AnimatedExampleWithKeyframes,
+  AnimatedExampleWithTransitions,
   Example,
-  ExampleWithKeyframes,
-  ExampleWithTransitions,
 } from "../components/example";
 
 export const App = () => {
@@ -270,11 +270,11 @@ export const App = () => {
         {active ? "Скрыть" : "Показать"}
       </button>
       <Example title="Компонент по умолчанию" />
-      <ExampleWithKeyframes
+      <AnimatedExampleWithKeyframes
         active={active}
         title="Сделано через keyframes (предпочтительно для монтирования элемента на экране)"
       />
-      <ExampleWithTransitions
+      <AnimatedExampleWithTransitions
         active={active}
         title="Сделано через transitions (предпочтительно только для переходов уже существующих элементов на экране)"
       />

@@ -1,4 +1,4 @@
-# React Animation Mount/Unmount HOC Components & Hooks
+# React Animated Mount/Unmount HOC Components & Hooks
 
 Легковесное и производительное решение для монтирования и размонтирования React-компонентов с плавными анимациями **без использования таймеров (`setTimeout`)** в коде JavaScript и гибкого встраивания в уже готовые бизнес-компоненты. Всё что нужно сделать, это прописать свои стили анимации CSS и завернуть компонент в HOC, или использовать hook с логикой напрямую.
 
@@ -62,8 +62,8 @@ interface WithKeyframesProps {
 
 export function withKeyframes<P extends { className?: string }>(
   Component: ComponentType<P>,
-  startCSSClass: string,
-  endCSSClass: string,
+  enterCSSClass: string,
+  exitCSSClass: string,
 ) {
   return function AnimatedComponent(props: P & WithKeyframesProps) {
     const { active } = props;
@@ -78,7 +78,7 @@ export function withKeyframes<P extends { className?: string }>(
     return cloneElement(element, {
       onAnimationEnd: unmount,
       className:
-        `${(element.props as P).className ?? ""} ${active ? startCSSClass : endCSSClass}`.trim(),
+        `${(element.props as P).className ?? ""} ${active ? enterCSSClass : exitCSSClass}`.trim(),
     } as Partial<P> & HTMLAttributes<HTMLElement>);
   };
 }

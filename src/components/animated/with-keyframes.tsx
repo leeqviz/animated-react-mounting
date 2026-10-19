@@ -12,8 +12,8 @@ interface WithKeyframesProps {
 
 export function withKeyframes<P extends { className?: string }>(
   Component: ComponentType<P>,
-  startCSSClass: string,
-  endCSSClass: string,
+  enterCSSClass: string,
+  exitCSSClass: string,
 ) {
   return function AnimatedComponent(props: P & WithKeyframesProps) {
     const { active } = props;
@@ -28,7 +28,7 @@ export function withKeyframes<P extends { className?: string }>(
     return cloneElement(element, {
       onAnimationEnd: unmount,
       className:
-        `${(element.props as P).className ?? ""} ${active ? startCSSClass : endCSSClass}`.trim(),
+        `${(element.props as P).className ?? ""} ${active ? enterCSSClass : exitCSSClass}`.trim(),
     } as Partial<P> & HTMLAttributes<HTMLElement>);
   };
 }
